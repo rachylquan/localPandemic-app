@@ -12,7 +12,7 @@
   <body>
     <header>
       <h1></h1>
-      <form id="js-form">
+      <form id="js-state-form">
         <label for="state">Select a state:</label>
         <select name="state" id="js-state" required>
           <option disabled value> -- select a state -- </option>
@@ -83,6 +83,13 @@
         <ul class="state-stats-list"></ul>
       </section>
       <!-- county -->
+      <section class="county-container">
+        <form id="js-county-form">
+          <label for="county">Select a county:</label>
+          <select name="county" id="js-county" required></select>
+          <input type="submit" value="Go">
+        </form>
+      </section>
       <!-- news -->
       <section class="state-news-container">
         <h2>News</h2>

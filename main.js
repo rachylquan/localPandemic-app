@@ -42,12 +42,27 @@ function displayStateNews(news) {
   }
 }
 
+function createCountyForm(stats) {
+  $('#js-county').empty();
+  const counties = stats.breakdowns;
+  console.log(counties);
+  $('#js-county').append(`
+  <option disabled value> -- select a county -- </option>
+  `);
+  for (let i = 0; i < counties.length; i++) {
+    $('#js-county').append(`
+    <option value="${counties[i].location.county}">${counties[i].location.county}</option>
+    `);
+  }
+}
+
 function displayStateResults([{location, stats}, {news}]) {
 console.log(news);
 console.log(location);
 console.log(stats);
   displayStateStats(location, stats);
   displayStateNews(news);
+  createCountyForm(stats);
 
   // show results
   $('.state-results-container').removeClass('hidden');
