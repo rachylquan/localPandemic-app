@@ -21,8 +21,6 @@ function displayStateStats(location, stats) {
     <li><span class="stat-label">Total Recovered Cases: </span>${stats.totalRecoveredCases}</li>
     <li><span class="stat-label">Newly Recovered Cases: </span>${stats.newlyRecoveredCases}</li>
   `);
-
-  
 }
 
 function displayStateNews(news) {
@@ -44,10 +42,13 @@ function displayStateNews(news) {
   }
 }
 
-function displayStateResults(data) {
-  displayStateStats(data[0].location, data[0].stats);
-  displayStateNews(data[1].news);
-  
+function displayStateResults([{location, stats}, {news}]) {
+console.log(news);
+console.log(location);
+console.log(stats);
+  displayStateStats(location, stats);
+  displayStateNews(news);
+
   // show results
   $('.state-results-container').removeClass('hidden');
 }
@@ -64,7 +65,6 @@ function getStateData(state) {
     headers: new Headers({
       "Subscription-Key": subscriptionKey})
   };
-
 
   const urls = [
     statsUrl,
@@ -87,11 +87,9 @@ function getStateData(state) {
       })
     ))
     .then(data => {
-      console.log(data);
       displayStateResults(data);
     })
 }
-
 
 function watchForm() {
   $('form').submit(event =>{
@@ -100,6 +98,5 @@ function watchForm() {
     getStateData(state);
   });
 }
-
 
 $(watchForm);
