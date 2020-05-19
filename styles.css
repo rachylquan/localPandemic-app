@@ -2,6 +2,42 @@
   box-sizing: border-box;
 }
 
+body {
+  margin: 0;
+  line-height: 1.25;
+}
+
+header {
+  padding: 1em;
+  border-bottom: 1px solid grey;
+}
+
+section {
+  padding: 1em;
+}
+
+select {
+  background-color: white;
+}
+
+/* news */
+.state-news-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.news-article-card {
+  border-bottom: 1px solid lightgrey;
+  padding: 10px;
+}
+
+
+/* helpers */
+
 .hidden {
   display: none;
+}
+
+.secondary-bg {
+  background-color: lightgray;
 }

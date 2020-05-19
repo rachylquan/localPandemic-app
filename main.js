@@ -26,18 +26,23 @@ function displayStateStats(location, stats) {
 function displayStateNews(news) {
   // empty news
   $('.state-news-list').empty();
-
-  // add each news article
-  for (let i = 0; i < news.length; i++) {
+  if (news.length !== 0) {
+    // add each news article
+    for (let i = 0; i < news.length; i++) {
+      $('.state-news-list').append(`
+        <li class="news-article-card">
+        <p>
+        ${news[i].publishedDateTime}
+        ${news[i].provider.name}</p>
+        <h3>${news[i].title}</h3>
+        <p>${news[i].excerpt}</p>
+        <a href="${news[i].webUrl}" target="_blank">Read More</a>
+        </li>
+      `);
+    }
+  } else {
     $('.state-news-list').append(`
-      <li class="news-article-card">
-      <p>
-      ${news[i].publishedDateTime}
-      ${news[i].provider.name}</p>
-      <h3>${news[i].title}</h3>
-      <p>${news[i].excerpt}</p>
-      <a href="${news[i].webUrl}" target="_blank">Read More</a>
-      </li>
+      <li>No news articles added today.</li>
     `);
   }
 }
