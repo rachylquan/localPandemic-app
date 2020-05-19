@@ -42,27 +42,57 @@ function displayStateNews(news) {
   }
 }
 
-function createCountyForm(stats) {
-  $('#js-county').empty();
-  const counties = stats.breakdowns;
-  console.log(counties);
-  $('#js-county').append(`
-  <option disabled value> -- select a county -- </option>
+function displayCountyData(countyData) {
+  $('.county-stats-list').empty();
+
+  $('.county-stats-list').append(`
+    <li><span class="stat-label">Total Confirmed Cases: </span>${countyData.totalConfirmedCases}</li>
+    <li><span class="stat-label">Newly Confirmed Cases: </span>${countyData.newlyConfirmedCases}</li>
+    <li><span class="stat-label">Total Deaths: </span>${countyData.totalDeaths}</li>
+    <li><span class="stat-label">New Deaths: </span>${countyData.newDeaths}</li>
+    <li><span class="stat-label">Total Recovered Cases: </span>${countyData.totalRecoveredCases}</li>
+    <li><span class="stat-label">Newly Recovered Cases: </span>${countyData.newlyRecoveredCases}</li>
   `);
-  for (let i = 0; i < counties.length; i++) {
+
+  $('.county-stats-list').removeClass('hidden');
+}
+
+function watchCountyForm(breakdowns) {
+  $('#js-county-form').submit(event =>{
+    event.preventDefault();
+    const county = $('#js-county').val();
+    for (let i = 0; i < breakdowns.length; i++) {
+      if (breakdowns[i].location.county === county) {
+        const countyData = breakdowns[i];
+        displayCountyData(countyData);
+      }
+    }
+  });
+}
+
+function createCountyForm(countyList) {
+  $('#js-county').empty();
+
+  $('#js-county').append(` 
+  <option disabled value selected> -- select a county -- </option>
+  `);
+
+  for (let i = 0; i < countyList.length; i++) {
     $('#js-county').append(`
-    <option value="${counties[i].location.county}">${counties[i].location.county}</option>
+    <option value="${countyList[i].location.county}">${countyList[i].location.county}</option>
     `);
   }
 }
 
 function displayStateResults([{location, stats}, {news}]) {
-console.log(news);
-console.log(location);
-console.log(stats);
+  $('.js-error-message').empty();
+  $('.error-container').addClass('hidden');
+  $('.county-stats-list').addClass('hidden');
   displayStateStats(location, stats);
   displayStateNews(news);
-  createCountyForm(stats);
+  const countyList = stats.breakdowns;
+  createCountyForm(countyList);
+  watchCountyForm(stats.breakdowns);
 
   // show results
   $('.state-results-container').removeClass('hidden');
@@ -72,9 +102,6 @@ function getStateData(state) {
   const location = "US-" + state;
   const statsUrl = searchStatsURL + location;
   const newsUrl = searchNewsURL + location;
-  
-  console.log(statsUrl);
-  console.log(newsUrl);
 
   const options = {
     headers: new Headers({
@@ -106,12 +133,12 @@ function getStateData(state) {
     })
 }
 
-function watchForm() {
-  $('form').submit(event =>{
+function watchStateForm() {
+  $('#js-state-form').submit(event =>{
     event.preventDefault();
     const state = $('#js-state').val();
     getStateData(state);
   });
 }
 
-$(watchForm);
+$(watchStateForm);
