@@ -1,11 +1,12 @@
 'use strict';
-
+// variables for subscription key and api urls
 const subscriptionKey = "6ea9f93d63424313806ab35bbbbcc97e";
 const searchStatsURL = "https://api.smartable.ai/coronavirus/stats/";
 const searchNewsURL = "https://api.smartable.ai/coronavirus/news/";
 
+// get the state name and the stats for the state selected
 function displayStateStats(location, updatedDateTime, stats) {
-  // empty state name and list
+  // empty state name, date and time
   $('.state-name').empty();
   $('.state-stats-list').empty();
   $('.updated-date').empty();
@@ -14,11 +15,14 @@ function displayStateStats(location, updatedDateTime, stats) {
   // add state name
   $('.state-name').append(`${location.provinceOrState}`);
 
-  // add last updated
+  // variables for last updated
   const updateDate = moment(updatedDateTime).format('MM/DD/YYYY');
   const updateTime = moment(updatedDateTime).format('HH:MM');
+
+  // add date and time
   $('.updated-date').append(updateDate);
   $('.updated-time').append(updateTime);
+
   // add stats
   $('.state-stats-list').append(`
     <li class="stat">${stats.totalConfirmedCases}
@@ -38,10 +42,12 @@ function displayStateStats(location, updatedDateTime, stats) {
   `);
 }
 
+// add news articles
 function displayStateNews(news) {
-  // empty news
+  // empty news list
   $('.state-news-list').empty();
-  // add each news article
+
+  // if there are news articles add the html for each article; otherwsise, show a message saying no news articles
   if (news.length !== 0) {
     news.forEach(article => {
       const date = moment(article.publishedDateTime).format('MM-DD-YYYY');
@@ -64,9 +70,12 @@ function displayStateNews(news) {
   }
 }
 
+// display the county stats
 function displayCountyData(countyData) {
+  //empty the county stats
   $('.county-stats-list').empty();
 
+  // html for county stats
   $('.county-stats-list').append(`
     <li class="stat">${countyData.totalConfirmedCases}
     <span class="stat-label">Total Confirmed Cases</span>
@@ -84,13 +93,19 @@ function displayCountyData(countyData) {
     </li>
   `);
 
+  // show the county list
   $('.county-stats-list').removeClass('hidden');
 }
 
+// watch for when a user searches for county stats
 function watchCountyForm(countyList) {
   $('#js-county-form').submit(event =>{
     event.preventDefault();
+
+    // get the value of the county selected
     const countySelected = $('#js-county').val();
+
+    // display county stats for the county selected
     countyList.forEach(county => {
       if (county.location.county === countySelected) {
         const countyData = county;
@@ -100,6 +115,7 @@ function watchCountyForm(countyList) {
   });
 }
 
+// create a county form 
 function createCountyForm(countyList) {
   // empty county list
   $('#js-county').empty();
@@ -116,10 +132,14 @@ function createCountyForm(countyList) {
   });
 }
 
+// show state results
 function displayStateResults([{location, updatedDateTime, stats}, {news}]) {
+  // empty the error message and county list, and hide the error container
   $('.js-error-message').empty();
   $('.error-container').addClass('hidden');
   $('.county-stats-list').addClass('hidden');
+
+  // send data to display the stats and news
   displayStateStats(location, updatedDateTime, stats);
   displayStateNews(news);
 
@@ -127,6 +147,7 @@ function displayStateResults([{location, updatedDateTime, stats}, {news}]) {
   $('.state-results-container').removeClass('hidden');
 }
 
+// get data from smartable api
 function getStateData(state) {
   const location = "US-" + state;
   const statsUrl = searchStatsURL + location;
@@ -151,18 +172,30 @@ function getStateData(state) {
         throw new Error(response.statusText);
       })
       .catch(err => {
-        $('.results-container').addClass('hidden');
-        $('.error-container').removeClass('hidden');
+        // hide any results
+        $('.state-results-container').addClass('hidden');
+
+        // empty error message
         $('#js-error-message').empty();
+
+        // add error message
         $('#js-error-message').text(`Something went wrong: ${err.message}`);
+
+        // show error message
+        $('.error-container').removeClass('hidden');
       })
     ))
     .then(data => {
+      // move header to the top of the page
       $('header').addClass('top');
-       
+
+      // send data to get state results
       displayStateResults(data);
 
+      // variable for county information
       const countyList = data[0].stats.breakdowns;
+
+      //if there are counties send them to county forma and watch the county form; otherwise, hide the county container
       if (countyList.length !== 0) {
         $('.county-container').removeClass('hidden');
         createCountyForm(countyList);
@@ -173,9 +206,11 @@ function getStateData(state) {
     })
 }
 
+// watch for when a user selects a state
 function watchStateForm() {
   $('#js-state-form').submit(event =>{
     event.preventDefault();
+    // get state selected
     const state = $('#js-state').val();
     getStateData(state);
   });
@@ -183,6 +218,7 @@ function watchStateForm() {
 
 $(watchStateForm);
 
+// reset page when you click the logo
 function watchHomeClick() {
   $('.branding-link').click(event => {
     event.preventDefault();
