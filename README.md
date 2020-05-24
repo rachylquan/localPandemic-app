@@ -14,4 +14,4 @@
 
 <h2>Screenshots</h2>
 
-![screenshots of localPandemic web app](/assets/img/screenshots.jpg)
+![screenshots of localPandemic web app](/assets/img/screenshots.png)
