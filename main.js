@@ -167,7 +167,6 @@ function getStateData(state) {
         $('.county-container').removeClass('hidden');
         createCountyForm(countyList);
         watchCountyForm(countyList);
-        
       } else {
         $('.county-container').addClass('hidden');
       }

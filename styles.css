@@ -206,11 +206,14 @@ select:focus, select::selection {
 
 .state-stats-list, .county-stats-list {
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .stat {
   font-size: 2rem;
   padding: 15px 0;
+  width: 100%;
 }
 
 .stat:not(:last-child) {
@@ -370,9 +373,6 @@ footer {
   
 
   /* stats */
-  .state-stats-list, .county-stats-list {
-    display: flex;
-  }
 
   .stat {
     font-size: 2rem;
