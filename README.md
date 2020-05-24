@@ -13,4 +13,4 @@
 </ul>
 
 <h2>Screenshots</h2>
-<img href="assets/img/screenshots.jpg" alt="screenshot of local pandemic app">
+![screenshots of localPandemic web app](/assets/img/screenshots.jpg)
