@@ -6,13 +6,18 @@
     <title>localPandemic app</title>
     <meta name="description" content="Find stats and news about covid-19 based off of location.">
 
+    <!-- fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://use.typekit.net/vjh1siu.css">
+
     <!-- css -->
     <link rel="stylesheet" href="styles.css" type="text/css">
   </head>
   <body>
     <header>
-      <h1>localPandemic</h1>
-      <p>Get the latest news about COVID-19 in the United States by location.</p>
+      <a class="branding-link" href="#"><img src="assets/img/localpandemic-logo.svg" alt="the local pandemic branding logo"></a>
+      <p>Get the latest stats and news about COVID-19 in the United States by location.</p>
       <form id="js-state-form">
         <label for="state">Select a state:</label>
         <select name="state" id="js-state" required>
@@ -70,7 +75,7 @@
           <option value="WY">Wyoming</option>
         </select>
 
-        <input type="submit" value="Go">
+        <input class="submit-button" type="submit" value="Go">
       </form>
     </header>
      <!-- error -->
@@ -81,16 +86,17 @@
       <!-- stats -->
       <section class="state-stats-container">
         <h1 class="state-name"></h1>
+        <p class="last-updated">COVID-19 Stats as of <span class="updated-date"></span> at <span class="updated-time"></span></p>
         <ul class="state-stats-list"></ul>
       </section>
       <!-- county -->
       <section class="county-container secondary-bg">
-        <h2>Search by county.</h2>
-        <p>Dive deeper and see the stats for your county.</p>
+        <h2 class="county-header">County Breakdown</h2>
+        <p class="description">See how each county is being affected by the virus</p>
         <form id="js-county-form">
-          <label for="county">Select a county:</label>
+          <label for="county">Select a County:</label>
           <select name="county" id="js-county" required></select>
-          <input type="submit" value="Go">
+          <input class="submit-button" type="submit" value="Go">
         </form>
         <ul class="county-stats-list hidden"></ul>
       </section>
@@ -100,9 +106,14 @@
         <ul class="state-news-list"></ul>
       </section>
     </main>
+
+    <footer>
+      <p class="small-txt">** All data displayed on the page is available through the <a href="https://developer.smartable.ai/" target="_blank">smartable coronavirus news api and stats api</a> . This data is refreshed every hour using credible data sources, including the country/state’s official government website, data available on wikipedia pages, latest news reports, Johns Hopkins University CSSE 2019-nCoV Dashboard, WHO Situation Reports, CDC Situation Updates, and DXY.cn.</p>
+    </footer>
     
     <!-- js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js" integrity="sha256-5oApc/wMda1ntIEK4qoWJ4YItnV4fBHMwywunj8gPqc=" crossorigin="anonymous"></script>
     <script src="main.js"></script>
   </body>
 </html>

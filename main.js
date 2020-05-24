@@ -4,42 +4,59 @@ const subscriptionKey = "6ea9f93d63424313806ab35bbbbcc97e";
 const searchStatsURL = "https://api.smartable.ai/coronavirus/stats/";
 const searchNewsURL = "https://api.smartable.ai/coronavirus/news/";
 
-function displayStateStats(location, stats) {
+function displayStateStats(location, updatedDateTime, stats) {
   // empty state name and list
   $('.state-name').empty();
   $('.state-stats-list').empty();
+  $('.updated-date').empty();
+  $('.updated-time').empty();
 
   // add state name
   $('.state-name').append(`${location.provinceOrState}`);
 
+  // add last updated
+  const updateDate = moment(updatedDateTime).format('MM/DD/YYYY');
+  const updateTime = moment(updatedDateTime).format('HH:MM');
+  $('.updated-date').append(updateDate);
+  $('.updated-time').append(updateTime);
   // add stats
   $('.state-stats-list').append(`
-    <li><span class="stat-label">Total Confirmed Cases: </span>${stats.totalConfirmedCases}</li>
-    <li><span class="stat-label">Newly Confirmed Cases: </span>${stats.newlyConfirmedCases}</li>
-    <li><span class="stat-label">Total Deaths: </span>${stats.totalDeaths}</li>
-    <li><span class="stat-label">New Deaths: </span>${stats.newDeaths}</li>
-    <li><span class="stat-label">Total Recovered Cases: </span>${stats.totalRecoveredCases}</li>
-    <li><span class="stat-label">Newly Recovered Cases: </span>${stats.newlyRecoveredCases}</li>
+    <li class="stat">${stats.totalConfirmedCases}
+    <span class="stat-label">Total Confirmed Cases</span>
+    <span class="new-stat">${stats.newlyConfirmedCases} today</span>
+    </li>
+
+    <li class="stat">${stats.totalDeaths}
+    <span class="stat-label">Total Deaths</span>
+    <span class="new-stat">${stats.newDeaths} today</span>
+    </li>
+
+    <li class="stat">${stats.totalRecoveredCases}
+    <span class="stat-label">Total Recovered Cases</span>
+    <span class="new-stat">${stats.newlyRecoveredCases} today</span>
+    </li>
   `);
 }
 
 function displayStateNews(news) {
   // empty news
   $('.state-news-list').empty();
+  // add each news article
   if (news.length !== 0) {
-    // add each news article
-    for (let i = 0; i < news.length; i++) {
+    news.forEach(article => {
+      const date = moment(article.publishedDateTime).format('MM-DD-YYYY');
       $('.state-news-list').append(`
         <li class="news-article-card">
-        <p>
-        ${news[i].publishedDateTime}
-        ${news[i].provider.name}</p>
-        <h3>${news[i].title}</h3>
-        <p>${news[i].excerpt}</p>
-        <a href="${news[i].webUrl}" target="_blank">Read More</a>
+         <p class="news-meta-container">
+          <span class="news-meta-info date">${date}</span>
+          <span class="news-meta-info">${article.provider.name}</span>
+        </p>
+          <h3 class="article-title">${article.title}</h3>
+          <p>${article.excerpt}</p>
+          <a class="article-link" href="${article.webUrl}" target="_blank">Read More</a>\
         </li>
       `);
-    }
+    });
   } else {
     $('.state-news-list').append(`
       <li>No news articles added today.</li>
@@ -51,53 +68,60 @@ function displayCountyData(countyData) {
   $('.county-stats-list').empty();
 
   $('.county-stats-list').append(`
-    <li><span class="stat-label">Total Confirmed Cases: </span>${countyData.totalConfirmedCases}</li>
-    <li><span class="stat-label">Newly Confirmed Cases: </span>${countyData.newlyConfirmedCases}</li>
-    <li><span class="stat-label">Total Deaths: </span>${countyData.totalDeaths}</li>
-    <li><span class="stat-label">New Deaths: </span>${countyData.newDeaths}</li>
-    <li><span class="stat-label">Total Recovered Cases: </span>${countyData.totalRecoveredCases}</li>
-    <li><span class="stat-label">Newly Recovered Cases: </span>${countyData.newlyRecoveredCases}</li>
+    <li class="stat">${countyData.totalConfirmedCases}
+    <span class="stat-label">Total Confirmed Cases</span>
+    <span class="new-stat">${countyData.newlyConfirmedCases} today</span>
+    </li>
+
+    <li class="stat">${countyData.totalDeaths}
+    <span class="stat-label">Total Confirmed Cases</span>
+    <span class="new-stat">${countyData.newDeaths} today</span>
+    </li>
+
+    <li class="stat">${countyData.totalRecoveredCases}
+    <span class="stat-label">Total Confirmed Cases</span>
+    <span class="new-stat">${countyData.newlyRecoveredCases} today</span>
+    </li>
   `);
 
   $('.county-stats-list').removeClass('hidden');
 }
 
-function watchCountyForm(breakdowns) {
+function watchCountyForm(countyList) {
   $('#js-county-form').submit(event =>{
     event.preventDefault();
-    const county = $('#js-county').val();
-    for (let i = 0; i < breakdowns.length; i++) {
-      if (breakdowns[i].location.county === county) {
-        const countyData = breakdowns[i];
+    const countySelected = $('#js-county').val();
+    countyList.forEach(county => {
+      if (county.location.county === countySelected) {
+        const countyData = county;
         displayCountyData(countyData);
       }
-    }
+    });
   });
 }
 
 function createCountyForm(countyList) {
+  // empty county list
   $('#js-county').empty();
 
+  // add default value
   $('#js-county').append(` 
   <option disabled value selected> -- select a county -- </option>
   `);
-
-  for (let i = 0; i < countyList.length; i++) {
+  // for each county add an option
+  countyList.forEach(county => {
     $('#js-county').append(`
-    <option value="${countyList[i].location.county}">${countyList[i].location.county}</option>
+    <option value="${county.location.county}">${county.location.county}</option>
     `);
-  }
+  });
 }
 
-function displayStateResults([{location, stats}, {news}]) {
+function displayStateResults([{location, updatedDateTime, stats}, {news}]) {
   $('.js-error-message').empty();
   $('.error-container').addClass('hidden');
   $('.county-stats-list').addClass('hidden');
-  displayStateStats(location, stats);
+  displayStateStats(location, updatedDateTime, stats);
   displayStateNews(news);
-  const countyList = stats.breakdowns;
-  createCountyForm(countyList);
-  watchCountyForm(stats.breakdowns);
 
   // show results
   $('.state-results-container').removeClass('hidden');
@@ -134,7 +158,19 @@ function getStateData(state) {
       })
     ))
     .then(data => {
+      $('header').addClass('top');
+       
       displayStateResults(data);
+
+      const countyList = data[0].stats.breakdowns;
+      if (countyList.length !== 0) {
+        $('.county-container').removeClass('hidden');
+        createCountyForm(countyList);
+        watchCountyForm(countyList);
+        
+      } else {
+        $('.county-container').addClass('hidden');
+      }
     })
 }
 
@@ -147,3 +183,13 @@ function watchStateForm() {
 }
 
 $(watchStateForm);
+
+function watchHomeClick() {
+  $('.branding-link').click(event => {
+    event.preventDefault();
+    $('main').addClass('hidden');
+    $('header').removeClass('top');
+  });
+}
+
+$(watchHomeClick);
