@@ -83,12 +83,12 @@ function displayCountyData(countyData) {
     </li>
 
     <li class="stat">${countyData.totalDeaths}
-    <span class="stat-label">Total Confirmed Cases</span>
+    <span class="stat-label">Total Deaths</span>
     <span class="new-stat">${countyData.newDeaths} today</span>
     </li>
 
     <li class="stat">${countyData.totalRecoveredCases}
-    <span class="stat-label">Total Confirmed Cases</span>
+    <span class="stat-label">Total Recovered</span>
     <span class="new-stat">${countyData.newlyRecoveredCases} today</span>
     </li>
   `);
