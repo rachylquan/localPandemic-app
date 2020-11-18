@@ -1,8 +1,8 @@
 'use strict';
+
 // variables for subscription key and api urls
-const subscriptionKey = "6ea9f93d63424313806ab35bbbbcc97e";
-const searchStatsURL = "https://api.smartable.ai/coronavirus/stats/";
-const searchNewsURL = "https://api.smartable.ai/coronavirus/news/";
+const searchStatsURL = 'https://coronavirus-smartable.p.rapidapi.com/stats/v1/';
+const searchNewsURL = 'https://coronavirus-smartable.p.rapidapi.com/news/v1/';
 
 // get the state name and the stats for the state selected
 function displayStateStats(location, updatedDateTime, stats) {
@@ -49,7 +49,7 @@ function displayStateNews(news) {
 
   // if there are news articles add the html for each article; otherwsise, show a message saying no news articles
   if (news.length !== 0) {
-    news.forEach(article => {
+    news.forEach((article) => {
       const date = moment(article.publishedDateTime).format('MM-DD-YYYY');
       $('.state-news-list').append(`
         <li class="news-article-card">
@@ -99,14 +99,14 @@ function displayCountyData(countyData) {
 
 // watch for when a user searches for county stats
 function watchCountyForm(countyList) {
-  $('#js-county-form').submit(event =>{
+  $('#js-county-form').submit((event) => {
     event.preventDefault();
 
     // get the value of the county selected
     const countySelected = $('#js-county').val();
 
     // display county stats for the county selected
-    countyList.forEach(county => {
+    countyList.forEach((county) => {
       if (county.location.county === countySelected) {
         const countyData = county;
         displayCountyData(countyData);
@@ -115,7 +115,7 @@ function watchCountyForm(countyList) {
   });
 }
 
-// create a county form 
+// create a county form
 function createCountyForm(countyList) {
   // empty county list
   $('#js-county').empty();
@@ -125,7 +125,7 @@ function createCountyForm(countyList) {
   <option disabled value selected> -- select a county -- </option>
   `);
   // for each county add an option
-  countyList.forEach(county => {
+  countyList.forEach((county) => {
     $('#js-county').append(`
     <option value="${county.location.county}">${county.location.county}</option>
     `);
@@ -133,7 +133,7 @@ function createCountyForm(countyList) {
 }
 
 // show state results
-function displayStateResults([{location, updatedDateTime, stats}, {news}]) {
+function displayStateResults([{ location, updatedDateTime, stats }, { news }]) {
   // empty the error message and county list, and hide the error container
   $('.js-error-message').empty();
   $('.error-container').addClass('hidden');
@@ -149,66 +149,65 @@ function displayStateResults([{location, updatedDateTime, stats}, {news}]) {
 
 // get data from smartable api
 function getStateData(state) {
-  const location = "US-" + state;
-  const statsUrl = searchStatsURL + location;
-  const newsUrl = searchNewsURL + location;
+  const location = 'US-' + state;
+  const statsUrl = searchStatsURL + location + '/';
+  const newsUrl = searchNewsURL + location + '/';
 
   const options = {
     headers: new Headers({
-      "Subscription-Key": subscriptionKey})
+      'x-rapidapi-key': '0b0af2a8e1msh81bdee91f1b3cd3p1a38f0jsnef494e8e55c3',
+      'x-rapidapi-host': 'coronavirus-smartable.p.rapidapi.com',
+    }),
   };
 
-  const urls = [
-    statsUrl,
-    newsUrl
-  ];
+  const urls = [statsUrl, newsUrl];
 
-  Promise.all(urls.map(url => 
-    fetch(url, options)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw new Error(response.statusText);
-      })
-      .catch(err => {
-        // hide any results
-        $('.state-results-container').addClass('hidden');
+  Promise.all(
+    urls.map((url) =>
+      fetch(url, options)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error(response.statusText);
+        })
+        .catch((err) => {
+          // hide any results
+          $('.state-results-container').addClass('hidden');
 
-        // empty error message
-        $('#js-error-message').empty();
+          // empty error message
+          $('#js-error-message').empty();
 
-        // add error message
-        $('#js-error-message').text(`Something went wrong: ${err.message}`);
+          // add error message
+          $('#js-error-message').text(`Something went wrong: ${err.message}`);
 
-        // show error message
-        $('.error-container').removeClass('hidden');
-      })
-    ))
-    .then(data => {
-      // move header to the top of the page
-      $('header').addClass('top');
+          // show error message
+          $('.error-container').removeClass('hidden');
+        })
+    )
+  ).then((data) => {
+    // move header to the top of the page
+    $('header').addClass('top');
 
-      // send data to get state results
-      displayStateResults(data);
+    // send data to get state results
+    displayStateResults(data);
 
-      // variable for county information
-      const countyList = data[0].stats.breakdowns;
+    // variable for county information
+    const countyList = data[0].stats.breakdowns;
 
-      //if there are counties send them to county forma and watch the county form; otherwise, hide the county container
-      if (countyList.length !== 0) {
-        $('.county-container').removeClass('hidden');
-        createCountyForm(countyList);
-        watchCountyForm(countyList);
-      } else {
-        $('.county-container').addClass('hidden');
-      }
-    })
+    //if there are counties send them to county forma and watch the county form; otherwise, hide the county container
+    if (countyList.length !== 0) {
+      $('.county-container').removeClass('hidden');
+      createCountyForm(countyList);
+      watchCountyForm(countyList);
+    } else {
+      $('.county-container').addClass('hidden');
+    }
+  });
 }
 
-// watch for when a user selects a state
 function watchStateForm() {
-  $('#js-state-form').submit(event =>{
+  $('#js-state-form').submit((event) => {
     event.preventDefault();
     // get state selected
     const state = $('#js-state').val();
@@ -220,7 +219,7 @@ $(watchStateForm);
 
 // reset page when you click the logo
 function watchHomeClick() {
-  $('.branding-link').click(event => {
+  $('.branding-link').click((event) => {
     event.preventDefault();
     $('main').addClass('hidden');
     $('header').removeClass('top');
